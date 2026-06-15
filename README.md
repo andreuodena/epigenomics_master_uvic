@@ -1,21 +1,19 @@
-# Epigenomics UVic – ATAC-seq and Distal Regulatory Activity Analysis
+# Activity Epigenomics - ATAC-seq and Distal Regulatory analysis
 
-## Overview
+## Description
 
-This repository contains the analyses performed for the **Epigenomics course (UVic-UCC Master in Omics Data Analysis)**, focused on:
+In this repository I have stored the following analyses:
 
 * **Task 4:** EN-TEx ATAC-seq downstream analyses
 * **Task 5:** Distal regulatory activity analysis
-
-The analyses were performed using **Docker**, **BEDTools**, **ENCODE EN-TEx datasets**, and custom Python scripts.
 
 ---
 
 # Task 4 – EN-TEx ATAC-seq downstream analyses
 
-## Objective
+## Main objectives
 
-The goal of this task was to characterize chromatin accessibility in **sigmoid colon** and **stomach** tissues from the same EN-TEx donor by:
+In this activity we have characterized chromatin accessibility in **sigmoid colon** and **stomach** tissues from the same EN-TEx donor by:
 
 1. Retrieving **ATAC-seq pseudoreplicated peaks**
 2. Identifying peaks overlapping **promoter regions**
@@ -23,9 +21,9 @@ The goal of this task was to characterize chromatin accessibility in **sigmoid c
 
 ---
 
-## Data retrieval
+## 1. Data retrieval
 
-ATAC-seq metadata were retrieved from ENCODE and filtered according to:
+We retrieved ATAC-seq metadata from ENCODE and perfomed a filtering according to:
 
 * **Assay:** ATAC-seq
 * **Format:** bigBed narrowPeak
@@ -33,16 +31,18 @@ ATAC-seq metadata were retrieved from ENCODE and filtered according to:
 * **Assembly:** GRCh38
 * **Tissues:** sigmoid colon and stomach
 
-Selected files:
+The selected files were:
 
 | Tissue        | ENCODE accession |
 | ------------- | ---------------- |
 | sigmoid_colon | ENCFF287UHP      |
 | stomach       | ENCFF762IFP      |
 
-Downloaded files were validated using **md5sum** and converted from **bigBed** to **BED** format using `bigBedToBed`.
+We performed validation of donwloaded files using **md5sum** and we did the conversion from **bigBed** to **BED** format.
 
 ### Total ATAC-seq peaks
+
+After this procedure, we were able to identify the following peaks:
 
 | Tissue        | Number of peaks |
 | ------------- | --------------- |
@@ -51,15 +51,17 @@ Downloaded files were validated using **md5sum** and converted from **bigBed** t
 
 ---
 
-## Peak overlap analyses
+## 2.Peak overlap analyses
 
-Protein-coding gene coordinates and promoter annotations were used to perform genomic intersections with **BEDTools**.
+Using protein-coding gene coordinates and promoter annotations, we performed genomic intersections with **BEDTools**.
 
 ### Peaks intersecting promoter regions
 
-Promoter coordinates were obtained from:
+We obtained the promoter coordinates from:
 
 `gencode.v24.protein.coding.non.redundant.TSS.bed`
+
+And the intersecting peak promoters where:
 
 | Tissue        | Peaks intersecting promoters |
 | ------------- | ---------------------------- |
@@ -68,31 +70,33 @@ Promoter coordinates were obtained from:
 
 ### Peaks outside gene coordinates
 
-Whole gene body coordinates were used:
+In this step whole gene body coordinates were used:
 
 `gencode.v24.protein.coding.gene.body.bed`
+
+The result of the number of peaks were:
 
 | Tissue        | Peaks outside gene coordinates |
 | ------------- | ------------------------------ |
 | sigmoid_colon | 37,035                         |
 | stomach       | 34,537                         |
 
-### Interpretation
+### Explanation
 
-A substantial proportion of accessible chromatin regions overlapped promoter regions, consistent with transcriptionally active genomic loci. Additionally, many peaks were detected outside annotated gene bodies, suggesting the presence of distal regulatory elements such as enhancers.
+We can see that a significant amount of accessible chromatin regions show ovverlapment with promoter regions. this is consistent with the fact that are trasncriptionally active locis. Additionally, we observed that many peaks were detected outside annotated gene bodies. This suggests the presence of distal regulatory elements.
 
 ---
 
 # Task 5 – Distal regulatory activity analysis
 
-## Objective
+## Description
 
-The objective of this task was to identify **candidate distal regulatory elements** and assign them to the nearest protein-coding genes.
+In this activity I have identified **candidate distal regulatory elements** and I have assigned them to the closest protein-coding genes.
 
-Candidate distal regulatory regions were defined as:
+First, to identify candidate distal regulatory we looked at:
 
 * ATAC-seq peaks **outside gene coordinates**
-* Overlapping both:
+* That show overlapping both:
 
   * **H3K27ac** (active enhancer mark)
   * **H3K4me1** (enhancer-associated mark)
@@ -100,6 +104,8 @@ Candidate distal regulatory regions were defined as:
 ---
 
 ## ChIP-seq datasets used
+
+These were the datasets used:
 
 | Tissue        | Histone mark | ENCODE accession |
 | ------------- | ------------ | ---------------- |
@@ -112,7 +118,7 @@ Candidate distal regulatory regions were defined as:
 
 ## Candidate distal regulatory elements
 
-Only chromosome 1 was considered for downstream analyses.
+In this actiivyt, only chromosome 1 was considered for downstream analyses. Showing the following candidate regulatory elements:
 
 | Tissue        | Candidate distal regulatory elements |
 | ------------- | ------------------------------------ |
@@ -123,24 +129,26 @@ Only chromosome 1 was considered for downstream analyses.
 
 ## Nearest gene assignment
 
-A custom Python script (`get.distance.py`) was implemented to identify the nearest protein-coding gene based on genomic distance to the gene start coordinate.
+For this section we used a custom Python script (`get.distance.py`) to identify the closest protein-coding gene based on genomic distance to the gene start.
 
 ### Distance to nearest gene
+
+We calculated the meand an median of the distances:
 
 | Tissue        | Mean distance (bp) | Median distance (bp) |
 | ------------- | ------------------ | -------------------- |
 | sigmoid_colon | 72,978             | 35,802               |
 | stomach       | 45,227             | 27,735               |
 
-### Interpretation
+### Explanation
 
-In both tissues, the **mean distance was higher than the median distance**, suggesting a **right-skewed distribution** in which most regulatory elements are located relatively close to genes, while a smaller subset lies much farther away.
+We observed that for both tissues, the **mean distance was higher than the median distance**. This suggests that most of the regulatory elements are located relatively close to genes, while a smaller subset lies much farther away.
 
-These observations are biologically consistent with enhancer-mediated regulation, as enhancers can act over distances ranging from several kilobases to hundreds of kilobases.
+These findings are consistent with what we shoudl expect for enhancer-mediated regulation, as we know that enhancers can act over distances ranging from several kilobases to hundreds of kilobases.
 
 ---
 
-## Software and tools
+## Software and tools used
 
 * Docker image: `dgarrimar/epigenomics_course`
 * BEDTools
